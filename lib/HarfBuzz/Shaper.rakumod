@@ -1,7 +1,7 @@
 use HarfBuzz;
 
 #| HarfBuzz shaping object
-unit class HarfBuzz::Shaper:ver<0.0.13>
+unit class HarfBuzz::Shaper:ver<0.1.0>
     is HarfBuzz;
 
 use HarfBuzz::Buffer;
@@ -60,9 +60,11 @@ method AT-POS(UInt $idx) {
         if $idx < $!buf.length { 
             my hb_glyph_position:D $pos = $!Pos[$idx];
             my hb_glyph_info:D $info = $!Info[$idx];
+            my hb_glyph_extents $extents .= new;
             my Int:D $gid = $info.codepoint;
             my Str:D $name = $!font.glyph-name($gid);
-            HarfBuzz::Glyph.new: :$pos, :$info, :$name, :$gid, :$!buf, :@!vec;
+            $!font.raw.get-glyph-extents($gid, $extents);
+            HarfBuzz::Glyph.new: :$pos, :$info, :$name, :$gid, :$!buf, :$extents, :@!vec;
         }
         else {
             HarfBuzz::Glyph
@@ -71,7 +73,7 @@ method AT-POS(UInt $idx) {
 }
 
 #| Returns a set of shaped HarfBuzz::Glyph objects
-method shape(HarfBuzz::Shaper:D $obj:) returns Iterator {
+method glyphs(HarfBuzz::Shaper:D $obj:) is also<shape> returns Iterator {
     class Iteration does Iterable does Iterator {
         has HarfBuzz::Shaper:D $.obj is required;
         has UInt $.elems = $!obj.elems;

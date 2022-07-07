@@ -1,5 +1,14 @@
 {{$NEXT}}
 
+0.1.0  2022-07-07T11:22:04+12:00
+    - Add scaled text-extents methods to HarfBuzz::Glyph:
+      x-bearing(), y-bearing(), width(), height()
+
+0.0.14  2022-06-30T05:56:25+12:00
+    - Remove HarfBuzz pre 1.7.7 compatibility
+    - Remove CLib::strnlen. Just use nativecast() to convert
+      buffers to strings
+
 0.0.13  2022-06-29T08:46:17+12:00
     - Upload to zef ecosystem
 
